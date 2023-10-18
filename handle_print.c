@@ -1,30 +1,30 @@
 #include "main.h"
 /**
- * handle_print - Prints an argument based on its type
- * @fmt: Formatted string in which to print the arguments.
- * @list: List of arguments to be printed.
- * @ind: ind.
- * @buffer: Buffer array to handle print.
- * @flags: Calculates active flags
- * @width: get width.
- * @precision: Precision specification
+ * print_handler - Prints an argument based on its type
+ * @fmt: Formatted string
+ * @list: List of arguments
+ * @ind: ind
+ * @buff: Buffer array
+ * @flg: active flg
+ * @w: get w.
+ * @accu: Precision specification
  * @size: Size specifier
  * Return: 1 or 2;
  */
-int handle_print(const char *fmt, int *ind, va_list list, char buffer[],
-	int flags, int width, int precision, int size)
+int print_handler(const char *fmt, int *ind, va_list list, char buff[],
+	int flg, int w, int accu, int size)
 {
-	int i, unknow_len = 0, printed_chars = -1;
+	int i, unknow_len = 0, prints_c = -1;
 	fmt_t fmt_types[] = {
-		{'c', print_char}, {'s', print_string}, {'%', print_percent},
-		{'i', print_int}, {'d', print_int}, {'b', print_binary},
-		{'u', print_unsigned}, {'o', print_octal}, {'x', print_hexadecimal},
-		{'X', print_hexa_upper}, {'p', print_pointer}, {'S', print_non_printable},
-		{'r', print_reverse}, {'R', print_rot13string}, {'\0', NULL}
+		{'c', print_c}, {'s', print_s}, {'%', _percentage},
+		{'i', print_i}, {'d', print_i}, {'b', _binary},
+		{'u', _unsigned}, {'o', _octal}, {'x', _hexadec},
+		{'X', hex_upper}, {'p', _pointer}, {'S', _unprintable},
+		{'r', _reverse}, {'R', _string}, {'\0', NULL}
 	};
 	for (i = 0; fmt_types[i].fmt != '\0'; i++)
 		if (fmt[*ind] == fmt_types[i].fmt)
-			return (fmt_types[i].fn(list, buffer, flags, width, precision, size));
+			return (fmt_types[i].fn(list, buff, flg, w, accu, size));
 
 	if (fmt_types[i].fmt == '\0')
 	{
@@ -33,7 +33,7 @@ int handle_print(const char *fmt, int *ind, va_list list, char buffer[],
 		unknow_len += write(1, "%%", 1);
 		if (fmt[*ind - 1] == ' ')
 			unknow_len += write(1, " ", 1);
-		else if (width)
+		else if (w)
 		{
 			--(*ind);
 			while (fmt[*ind] != ' ' && fmt[*ind] != '%')
@@ -45,5 +45,5 @@ int handle_print(const char *fmt, int *ind, va_list list, char buffer[],
 		unknow_len += write(1, &fmt[*ind], 1);
 		return (unknow_len);
 	}
-	return (printed_chars);
+	return (prints_c);
 }
